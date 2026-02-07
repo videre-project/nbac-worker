@@ -27,10 +27,29 @@ jobs:
         run: |
           uv venv --python ${{ env.CI_PYTHON_VERSION }} .venv
           echo "$PWD/.venv/bin" >> $GITHUB_PATH
+      # Setup Cloudflare Tunnel
+      - name: Install cloudflared
+        run: |
+          wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+          chmod +x cloudflared-linux-amd64
+          sudo mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
+          cloudflared --version
+      - name: Start Cloudflare Tunnel
+        run: |
+          cloudflared access tcp --hostname db1.videreproject.com --url localhost:5433 &
+          echo "Tunnel started in background"
+          
+          # Wait for the port to be ready
+          timeout 30 sh -c 'until nc -z localhost 5433; do sleep 1; done'
+          echo "Tunnel is ready"
+        env:
+          CF_CLIENT_ID: ${{ secrets.CF_CLIENT_ID }}
+          CF_CLIENT_SECRET: ${{ secrets.CF_CLIENT_SECRET }}
       # Run the build script
       - name: Create .env file
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          # Use the local tunnel port (5433) to proxy a connection
+          echo "DATABASE_URL=postgresql://api:${{ secrets.DB_PASSWORD }}@localhost:5433/mtgo?sslmode=disable" >> .env
           echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
           echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
           echo "CLOUDFLARE_DATABASE_ID=${{ secrets.CLOUDFLARE_DATABASE_ID }}" >> .env

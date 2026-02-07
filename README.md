@@ -206,6 +206,23 @@ Use the [UV CLI](https://docs.astral.sh/uv/getting-started/installation/) to ins
 uv install
 ```
 
+### Setup Database Tunnel
+
+To run the build script locally, you must connect to the production database via a Cloudflare Tunnel bridge.
+
+1.  **Install `cloudflared`**: Follow the [official instructions](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) or use a package manager.
+
+2.  **Start the Bridge**: Run the following command to forward the remote database to your local port `5433`.
+
+    ```bash
+    # Forward the remote Postgres service to localhost:5433
+    cloudflared access tcp --hostname db1.videreproject.com --url localhost:5433
+    ```
+
+    *Note: For more infrastructure details, see the [`videre-project/mtgo-db`](https://github.com/videre-project/mtgo-db) repository.*
+
+3.  **Update `.env`**: Ensure your `.env` file points to this local port (see `.env-example`).
+
 ### Build and Deploy
 
 1. **Build NBAC Artifacts**: Run the build script to update Cloudflare D1 with the latest NBAC artifacts for each format.
