@@ -47,9 +47,15 @@ jobs:
           CF_CLIENT_SECRET: ${{ secrets.CF_CLIENT_SECRET }}
       # Run the build script
       - name: Create .env file
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          # Use the local tunnel port (5433) to proxy a connection
-          echo "DATABASE_URL=postgresql://api:${{ secrets.DB_PASSWORD }}@localhost:5433/mtgo?sslmode=disable" >> .env
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::DATABASE_URL secret is empty or unavailable"
+            exit 1
+          fi
+      
+          echo "DATABASE_URL=$DATABASE_URL" >> .env
           echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
           echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
           echo "CLOUDFLARE_DATABASE_ID=${{ secrets.CLOUDFLARE_DATABASE_ID }}" >> .env
