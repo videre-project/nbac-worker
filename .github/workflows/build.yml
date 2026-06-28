@@ -40,7 +40,7 @@ jobs:
           echo "Tunnel started in background"
           
           # Wait for the port to be ready
-          timeout 30 sh -c 'until nc -z localhost 5433; do sleep 1; done'
+          timeout 30 sh -c 'until nc -z localhost 5432; do sleep 1; done'
           echo "Tunnel is ready"
         env:
           CF_CLIENT_ID: ${{ secrets.CF_CLIENT_ID }}
