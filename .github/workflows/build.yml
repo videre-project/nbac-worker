@@ -36,7 +36,7 @@ jobs:
           cloudflared --version
       - name: Start Cloudflare Tunnel
         run: |
-          cloudflared access tcp --hostname db1.videreproject.com --url localhost:5433 &
+          cloudflared access tcp --hostname db1.videreproject.com --url localhost:5432 &
           echo "Tunnel started in background"
           
           # Wait for the port to be ready
