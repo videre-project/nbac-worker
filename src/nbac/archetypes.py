@@ -42,6 +42,7 @@ MACRO_ARCHETYPES = [
   'Prison',
   'Tempo',
   'Ramp',
+  'GenericBlink',
 ]
 
 
