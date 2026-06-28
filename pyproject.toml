@@ -3,11 +3,12 @@ name = "nbac"
 version = "0.1.0"
 description = "A simple Python package for Naive Bayes archetype classification (NBAC)."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
   "cloudflare",
+  "idna>=3.15",
   "psycopg2-binary",
-  "python-dotenv", # optional
+  "python-dotenv>=1.2.2", # optional
 ]
 
 [build-system]
