@@ -27,9 +27,18 @@ MIN_DATE = (TIMESTAMP := datetime.now()) - timedelta(days=90)
 start_pool()
 
 # Setup a connection to the Cloudflare D1 API.
+api_key = env.get("CLOUDFLARE_API_KEY")
+api_email = env.get("CLOUDFLARE_EMAIL")
+
 if api_token := env.get("CLOUDFLARE_API_TOKEN"):
+  env.pop("CLOUDFLARE_API_KEY", None)
+  env.pop("CLOUDFLARE_EMAIL", None)
   client = Cloudflare(api_token=api_token)
-elif (api_key := env.get("CLOUDFLARE_API_KEY")) and (api_email := env.get("CLOUDFLARE_EMAIL")):
+elif api_key and api_key.startswith("cfat_"):
+  env.pop("CLOUDFLARE_API_KEY", None)
+  env.pop("CLOUDFLARE_EMAIL", None)
+  client = Cloudflare(api_token=api_key)
+elif api_key and api_email:
   client = Cloudflare(default_headers={
     "X-Auth-Key": api_key,
     "X-Auth-Email": api_email,
