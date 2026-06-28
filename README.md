@@ -212,11 +212,11 @@ To run the build script locally, you must connect to the production database via
 
 1.  **Install `cloudflared`**: Follow the [official instructions](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) or use a package manager.
 
-2.  **Start the Bridge**: Run the following command to forward the remote database to your local port `5433`.
+2.  **Start the Bridge**: Run the following command to forward the public read-only database to your local port `5432`.
 
     ```bash
-    # Forward the remote Postgres service to localhost:5433
-    cloudflared access tcp --hostname db1.videreproject.com --url localhost:5433
+    # Forward the public Postgres service to localhost:5432
+    cloudflared access tcp --hostname public-db.videreproject.com --url localhost:5432
     ```
 
     *Note: For more infrastructure details, see the [`videre-project/mtgo-db`](https://github.com/videre-project/mtgo-db) repository.*

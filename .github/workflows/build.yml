@@ -36,26 +36,16 @@ jobs:
           cloudflared --version
       - name: Start Cloudflare Tunnel
         run: |
-          cloudflared access tcp --hostname db1.videreproject.com --url localhost:5432 &
+          cloudflared access tcp --hostname public-db.videreproject.com --url localhost:5432 &
           echo "Tunnel started in background"
           
           # Wait for the port to be ready
           timeout 30 sh -c 'until nc -z localhost 5432; do sleep 1; done'
           echo "Tunnel is ready"
-        env:
-          CF_CLIENT_ID: ${{ secrets.CF_CLIENT_ID }}
-          CF_CLIENT_SECRET: ${{ secrets.CF_CLIENT_SECRET }}
       # Run the build script
       - name: Create .env file
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          if [ -z "$DATABASE_URL" ]; then
-            echo "::error::DATABASE_URL secret is empty or unavailable"
-            exit 1
-          fi
-      
-          echo "DATABASE_URL=$DATABASE_URL" >> .env
+          echo "DATABASE_URL=postgresql://public_api@localhost:5432/mtgo?sslmode=disable" >> .env
           echo "CLOUDFLARE_EMAIL=${{ secrets.CLOUDFLARE_EMAIL }}" >> .env
           echo "CLOUDFLARE_API_KEY=${{ secrets.CLOUDFLARE_API_KEY }}" >> .env
           echo "CLOUDFLARE_DATABASE_ID=${{ secrets.CLOUDFLARE_DATABASE_ID }}" >> .env
