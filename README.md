@@ -1,5 +1,7 @@
 # nbac-worker
 
+![Build](https://img.shields.io/github/actions/workflow/status/videre-project/nbac-worker/build.yml?label=Build&labelColor=3f4551)
+
 Cloudflare worker for archetype classification using NBAC (multinomial Naive Bayes).
 
 [Overview](#overview) |
